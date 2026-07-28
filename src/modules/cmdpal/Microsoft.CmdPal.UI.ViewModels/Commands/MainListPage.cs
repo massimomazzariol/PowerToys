@@ -6,6 +6,7 @@
  #define CMDPAL_FF_MAINPAGE_TIME_RAISE_ITEMS
 */
 
+using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
@@ -89,6 +90,10 @@ public sealed partial class MainListPage : DynamicListPage,
     private bool _includeApps;
     private bool _filteredItemsIncludesApps;
 
+    // Last per-provider settings we reacted to, so a settings reload can tell whether any
+    // provider's search weight actually changed and only then re-rank the active query.
+    private ImmutableDictionary<string, ProviderSettings>? _lastProviderSettingsSnapshot;
+
     private int AppResultLimit => AllAppsCommandProvider.TopLevelResultLimit;
 
     // ===== Early-frame relevance (Phase 7c) =====
@@ -128,6 +133,14 @@ public sealed partial class MainListPage : DynamicListPage,
     // user invokes a result) to resolve the invoked item's visible rank and ranker tier.
     private IReadOnlyList<IListItem>? _lastSearchViewItems;
     private IReadOnlyList<RoScored<IListItem>>? _lastScoredGlobalFallbacks;
+
+    // Scored inputs and query length captured together with _lastSearchViewItems at render time, so
+    // selection telemetry resolves rank, tier, and query length from one coherent generation even
+    // after a newer query has already published fresh scored fields.
+    private RoScored<IListItem>[]? _lastSearchViewFilteredItems;
+    private RoScored<IListItem>[]? _lastSearchViewFilteredApps;
+    private IEnumerable<RoScored<IListItem>>? _lastSearchViewFallbackItems;
+    private int _lastSearchViewQueryLength;
 
 #if CMDPAL_FF_MAINPAGE_TIME_RAISE_ITEMS
     private DateTimeOffset _last = DateTimeOffset.UtcNow;
@@ -337,11 +350,15 @@ public sealed partial class MainListPage : DynamicListPage,
             _fallbacksSeparator,
             AppResultLimit);
 
-        // Snapshot the rendered order and the (packed-score) global fallbacks so selection
-        // telemetry can resolve an invoked item's rank and tier off the hot path. These are
-        // plain reference assignments - no extra allocation on the render path.
+        // Snapshot the rendered order plus every scored input and the query length together, so
+        // selection telemetry resolves an invoked item's rank, tier, and query length from this one
+        // generation off the hot path. These are plain reference assignments - no extra allocation.
         _lastSearchViewItems = result;
         _lastScoredGlobalFallbacks = validScoredFallbacks;
+        _lastSearchViewFilteredItems = _filteredItems;
+        _lastSearchViewFilteredApps = _filteredApps;
+        _lastSearchViewFallbackItems = _fallbackItems;
+        _lastSearchViewQueryLength = SearchText?.Length ?? 0;
 
         return result;
     }
@@ -581,6 +598,10 @@ public sealed partial class MainListPage : DynamicListPage,
 
             if (aliases.CheckAlias(newSearch))
             {
+                // An alias query supersedes any normal query whose settled-search telemetry is
+                // still pending in the debounce; drop it so the superseded query never emits.
+                _searchTelemetryDebounce.Cancel();
+
                 if (_filteredItemsIncludesApps != _includeApps)
                 {
                     lock (_tlcManager.TopLevelCommands)
@@ -659,6 +680,10 @@ public sealed partial class MainListPage : DynamicListPage,
                 _searchTelemetryDebounce.Cancel();
                 _lastSearchViewItems = null;
                 _lastScoredGlobalFallbacks = null;
+                _lastSearchViewFilteredItems = null;
+                _lastSearchViewFilteredApps = null;
+                _lastSearchViewFallbackItems = null;
+                _lastSearchViewQueryLength = 0;
 
                 var wasAlreadyEmpty = string.IsNullOrWhiteSpace(oldSearch);
                 RequestRefresh(fullRefresh: true, interval: wasAlreadyEmpty ? null : TimeSpan.Zero);
@@ -1041,29 +1066,32 @@ public sealed partial class MainListPage : DynamicListPage,
     // item is not among the last rendered search results.
     private void EmitSelectionTelemetry(IListItem invoked)
     {
-        var searchText = SearchText;
-        if (string.IsNullOrWhiteSpace(searchText))
+        // Resolve everything from the last rendered search-view snapshot so the invoked item's rank,
+        // tier, and the reported query length all come from one generation. If the last render was
+        // the default (no-search) view, _lastSearchViewItems is null and nothing is emitted.
+        var lastView = _lastSearchViewItems;
+        if (lastView is null || _lastSearchViewQueryLength <= 0)
         {
             return;
         }
 
-        var index = ResolveVisibleIndex(_lastSearchViewItems, invoked, _resultsSeparator, _fallbacksSeparator);
+        var index = ResolveVisibleIndex(lastView, invoked, _resultsSeparator, _fallbacksSeparator);
         if (index < 0)
         {
             return;
         }
 
-        var packed = (_filteredItems ?? Enumerable.Empty<RoScored<IListItem>>())
-            .Concat(_filteredApps ?? Enumerable.Empty<RoScored<IListItem>>())
+        var packed = (_lastSearchViewFilteredItems ?? Enumerable.Empty<RoScored<IListItem>>())
+            .Concat(_lastSearchViewFilteredApps ?? Enumerable.Empty<RoScored<IListItem>>())
             .Concat(_lastScoredGlobalFallbacks ?? Enumerable.Empty<RoScored<IListItem>>());
 
-        var tier = ResolveSelectedTier(invoked, packed, _fallbackItems);
+        var tier = ResolveSelectedTier(invoked, packed, _lastSearchViewFallbackItems);
         if (tier == RankTier.None)
         {
             return;
         }
 
-        WeakReferenceMessenger.Default.Send(BuildSearchSelectedMessage(searchText, index, tier));
+        WeakReferenceMessenger.Default.Send(BuildSearchSelectedMessage(_lastSearchViewQueryLength, index, tier));
     }
 
     // Stores the latest settled-search metrics and (re)arms the debounce. Only the query LENGTH is
@@ -1111,7 +1139,10 @@ public sealed partial class MainListPage : DynamicListPage,
     // Builds the selection telemetry payload, capturing only the query LENGTH, the selected rank,
     // and the ranker tier. Exposed for tests to prove the raw query text is never carried.
     internal static TelemetrySearchResultSelectedMessage BuildSearchSelectedMessage(string query, int selectedIndex, RankTier selectedTier)
-        => new(query?.Length ?? 0, selectedIndex, selectedTier);
+        => BuildSearchSelectedMessage(query?.Length ?? 0, selectedIndex, selectedTier);
+
+    internal static TelemetrySearchResultSelectedMessage BuildSearchSelectedMessage(int queryLength, int selectedIndex, RankTier selectedTier)
+        => new(Math.Max(queryLength, 0), selectedIndex, selectedTier);
 
     // Zero-based visible rank of an invoked item within the rendered results, skipping the section
     // separators. Returns -1 when the item is not present (e.g. it was invoked from a different view).
@@ -1238,7 +1269,65 @@ public sealed partial class MainListPage : DynamicListPage,
 
     private void SettingsChangedHandler(ISettingsService sender, SettingsModel args) => HotReloadSettings(args);
 
-    private void HotReloadSettings(SettingsModel settings) => ShowDetails = settings.ShowAppDetails;
+    private void HotReloadSettings(SettingsModel settings)
+    {
+        ShowDetails = settings.ShowAppDetails;
+
+        // A per-provider search-weight change has to reorder the query that is already on screen.
+        // Scoring reads the weight live, but scored results are cached, so without an explicit
+        // re-score the active query keeps its old order until the next keystroke. Detect a weight
+        // change and re-rank the current search in place.
+        var providerSettings = settings.ProviderSettings;
+        var weightsChanged = ProviderWeightsChanged(_lastProviderSettingsSnapshot, providerSettings);
+        _lastProviderSettingsSnapshot = providerSettings;
+
+        if (weightsChanged && !string.IsNullOrEmpty(SearchText))
+        {
+            RerankActiveSearch();
+        }
+    }
+
+    // Re-scores the current query off the UI thread so a settings change (e.g. a per-provider
+    // search-weight change) reorders the results already shown. This reuses the same non-reset
+    // re-score path as an app-inclusion refresh: the retained matches are re-scored with the new
+    // weights, which is sufficient because provider weight only nudges order within a tier and
+    // never changes which items match.
+    private void RerankActiveSearch()
+    {
+        var current = SearchText;
+        if (!string.IsNullOrEmpty(current))
+        {
+            _ = Task.Run(() => UpdateSearchTextCore(current, current, isUserInput: false));
+        }
+    }
+
+    // True when the effective per-provider search weight differs between two snapshots. A provider
+    // absent from a snapshot is treated as Normal, so adding or removing an entry whose weight is
+    // Normal does not count as a change.
+    private static bool ProviderWeightsChanged(
+        ImmutableDictionary<string, ProviderSettings>? previous,
+        ImmutableDictionary<string, ProviderSettings> current)
+    {
+        previous ??= ImmutableDictionary<string, ProviderSettings>.Empty;
+        if (ReferenceEquals(previous, current))
+        {
+            return false;
+        }
+
+        var keys = new HashSet<string>(previous.Keys, StringComparer.Ordinal);
+        keys.UnionWith(current.Keys);
+        foreach (var key in keys)
+        {
+            var previousWeight = previous.TryGetValue(key, out var p) ? p.SearchWeight : ProviderSearchWeight.Normal;
+            var currentWeight = current.TryGetValue(key, out var c) ? c.SearchWeight : ProviderSearchWeight.Normal;
+            if (previousWeight != currentWeight)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void Dispose()
     {
