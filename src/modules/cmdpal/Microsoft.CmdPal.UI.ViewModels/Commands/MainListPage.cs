@@ -792,7 +792,11 @@ public sealed partial class MainListPage : DynamicListPage,
         var settings = _settingsService.Settings;
         var scoringNow = DateTimeOffset.UtcNow;
 
-        var searchQuery = matcher.PrecomputeQuery(SearchText);
+        // Precompute from the snapshotted query (newSearch), not the live SearchText field, which a
+        // newer keystroke may already have advanced. Every other scoring input is pinned above for
+        // the same reason; using SearchText here would score this pass against a different query than
+        // the one it was launched for.
+        var searchQuery = matcher.PrecomputeQuery(newSearch);
 
         // Commands resolve their per-provider weight from the captured settings. Every installed app
         // belongs to the well-known AllApps provider, so its weight is constant across the whole apps
