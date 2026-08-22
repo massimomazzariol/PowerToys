@@ -356,6 +356,95 @@
                         </tkcontrols:SettingsExpander>
 
                         <tkcontrols:SettingsExpander
+                            Name="TextCase"
+                            x:Uid="AdvancedPaste_TextCase"
+                            DataContext="{x:Bind ViewModel.AdditionalActions.TextCase, Mode=OneWay}"
+                            HeaderIcon="{ui:FontIcon Glyph=&#xE8E9;}"
+                            IsExpanded="{Binding IsShown, Mode=OneWay}">
+                            <tkcontrols:SettingsExpander.Content>
+                                <ToggleSwitch
+                                    IsOn="{Binding IsShown, Mode=TwoWay}"
+                                    OffContent=""
+                                    OnContent="" />
+                            </tkcontrols:SettingsExpander.Content>
+                            <tkcontrols:SettingsExpander.Items>
+                                <!--  HACK: For some weird reason, a ShortcutControl does not work correctly if it's the first or last item in the expander, so we add an invisible card.  -->
+                                <tkcontrols:SettingsCard Visibility="Collapsed" />
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseLowerCase"
+                                    x:Uid="AdvancedPaste_LowerCase"
+                                    DataContext="{Binding LowerCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseUpperCase"
+                                    x:Uid="AdvancedPaste_UpperCase"
+                                    DataContext="{Binding UpperCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseTitleCase"
+                                    x:Uid="AdvancedPaste_TitleCase"
+                                    DataContext="{Binding TitleCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseSentenceCase"
+                                    x:Uid="AdvancedPaste_SentenceCase"
+                                    DataContext="{Binding SentenceCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseToggleCase"
+                                    x:Uid="AdvancedPaste_ToggleCase"
+                                    DataContext="{Binding ToggleCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseCamelCase"
+                                    x:Uid="AdvancedPaste_CamelCase"
+                                    DataContext="{Binding CamelCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCasePascalCase"
+                                    x:Uid="AdvancedPaste_PascalCase"
+                                    DataContext="{Binding PascalCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseSnakeCase"
+                                    x:Uid="AdvancedPaste_SnakeCase"
+                                    DataContext="{Binding SnakeCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseScreamingSnakeCase"
+                                    x:Uid="AdvancedPaste_ScreamingSnakeCase"
+                                    DataContext="{Binding ScreamingSnakeCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <tkcontrols:SettingsCard
+                                    Name="TextCaseKebabCase"
+                                    x:Uid="AdvancedPaste_KebabCase"
+                                    DataContext="{Binding KebabCase, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind ViewModel.AdditionalActions.TextCase.IsShown, Mode=OneWay}">
+                                    <ContentControl ContentTemplate="{StaticResource AdditionalActionTemplate}" />
+                                </tkcontrols:SettingsCard>
+                                <!--  HACK: For some weird reason, a ShortcutControl does not work correctly if it's the first or last item in the expander, so we add an invisible card.  -->
+                                <tkcontrols:SettingsCard Visibility="Collapsed" />
+                            </tkcontrols:SettingsExpander.Items>
+                        </tkcontrols:SettingsExpander>
+                        <tkcontrols:SettingsExpander
                             Name="PasteAsFile"
                             x:Uid="PasteAsFile"
                             DataContext="{x:Bind ViewModel.AdditionalActions.PasteAsFile, Mode=OneWay}"

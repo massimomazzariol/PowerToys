@@ -54,7 +54,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.LowerCase)]
     LowerCase = 13,
 
     [PasteFormatMetadata(
@@ -63,7 +64,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.UpperCase)]
     UpperCase = 14,
 
     [PasteFormatMetadata(
@@ -72,7 +74,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.TitleCase)]
     TitleCase = 15,
 
     [PasteFormatMetadata(
@@ -81,7 +84,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.SentenceCase)]
     SentenceCase = 16,
 
     [PasteFormatMetadata(
@@ -90,7 +94,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.ToggleCase)]
     ToggleCase = 17,
 
     [PasteFormatMetadata(
@@ -99,7 +104,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.CamelCase)]
     CamelCase = 18,
 
     [PasteFormatMetadata(
@@ -108,7 +114,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.PascalCase)]
     PascalCase = 19,
 
     [PasteFormatMetadata(
@@ -117,7 +124,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.SnakeCase)]
     SnakeCase = 20,
 
     [PasteFormatMetadata(
@@ -126,7 +134,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.ScreamingSnakeCase)]
     ScreamingSnakeCase = 21,
 
     [PasteFormatMetadata(
@@ -135,7 +144,8 @@ public enum PasteFormats
         IconGlyph = "\uE8E9",
         RequiresAIService = false,
         CanPreview = false,
-        SupportedClipboardFormats = ClipboardFormat.Text)]
+        SupportedClipboardFormats = ClipboardFormat.Text,
+        IPCKey = AdvancedPasteTextCaseAction.PropertyNames.KebabCase)]
     KebabCase = 22,
 
     [PasteFormatMetadata(

@@ -2245,7 +2245,44 @@ Made with 💗 by Microsoft and the PowerToys community.</value>
     <value>Override the system prompt that sets the AI's role for coaching explanations. Leave empty to use the default.</value>
     <comment>Description for the coaching system prompt customization</comment>
   </data>
-  <data name="PasteAsFile.Header" xml:space="preserve">
+  <data name="AdvancedPaste_TextCase.Header" xml:space="preserve">
+    <value>Text case</value>
+  </data>
+  <data name="AdvancedPaste_LowerCase.Header" xml:space="preserve">
+    <value>lowercase</value>
+  </data>
+  <data name="AdvancedPaste_UpperCase.Header" xml:space="preserve">
+    <value>UPPERCASE</value>
+  </data>
+  <data name="AdvancedPaste_TitleCase.Header" xml:space="preserve">
+    <value>Title Case</value>
+  </data>
+  <data name="AdvancedPaste_SentenceCase.Header" xml:space="preserve">
+    <value>Sentence case</value>
+  </data>
+  <data name="AdvancedPaste_ToggleCase.Header" xml:space="preserve">
+    <value>Toggle case</value>
+  </data>
+  <data name="AdvancedPaste_CamelCase.Header" xml:space="preserve">
+    <value>camelCase</value>
+    <comment>Developer identifier casing style; preserve the casing shown.</comment>
+  </data>
+  <data name="AdvancedPaste_PascalCase.Header" xml:space="preserve">
+    <value>PascalCase</value>
+    <comment>Developer identifier casing style; preserve the casing shown.</comment>
+  </data>
+  <data name="AdvancedPaste_SnakeCase.Header" xml:space="preserve">
+    <value>snake_case</value>
+    <comment>Developer identifier casing style; preserve the underscore and casing shown.</comment>
+  </data>
+  <data name="AdvancedPaste_ScreamingSnakeCase.Header" xml:space="preserve">
+    <value>SCREAMING_SNAKE_CASE</value>
+    <comment>Developer identifier casing style; preserve the underscores and casing shown.</comment>
+  </data>
+  <data name="AdvancedPaste_KebabCase.Header" xml:space="preserve">
+    <value>kebab-case</value>
+    <comment>Developer identifier casing style; preserve the hyphen and casing shown.</comment>
+  </data>  <data name="PasteAsFile.Header" xml:space="preserve">
     <value>Paste as file</value>
   </data>
   <data name="PasteAsTxtFile.Header" xml:space="preserve">

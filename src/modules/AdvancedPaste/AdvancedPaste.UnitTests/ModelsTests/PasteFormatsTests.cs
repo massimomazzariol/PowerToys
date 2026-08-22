@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using AdvancedPaste.Models;
+using Microsoft.PowerToys.Settings.UI.Library;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdvancedPaste.UnitTests.ModelsTests;
@@ -36,5 +37,39 @@ public sealed class PasteFormatsTests
         Assert.AreEqual(20, (int)PasteFormats.SnakeCase);
         Assert.AreEqual(21, (int)PasteFormats.ScreamingSnakeCase);
         Assert.AreEqual(22, (int)PasteFormats.KebabCase);
+    }
+
+    [DataTestMethod]
+    [DataRow(PasteFormats.LowerCase, AdvancedPasteTextCaseAction.PropertyNames.LowerCase)]
+    [DataRow(PasteFormats.UpperCase, AdvancedPasteTextCaseAction.PropertyNames.UpperCase)]
+    [DataRow(PasteFormats.TitleCase, AdvancedPasteTextCaseAction.PropertyNames.TitleCase)]
+    [DataRow(PasteFormats.SentenceCase, AdvancedPasteTextCaseAction.PropertyNames.SentenceCase)]
+    [DataRow(PasteFormats.ToggleCase, AdvancedPasteTextCaseAction.PropertyNames.ToggleCase)]
+    [DataRow(PasteFormats.CamelCase, AdvancedPasteTextCaseAction.PropertyNames.CamelCase)]
+    [DataRow(PasteFormats.PascalCase, AdvancedPasteTextCaseAction.PropertyNames.PascalCase)]
+    [DataRow(PasteFormats.SnakeCase, AdvancedPasteTextCaseAction.PropertyNames.SnakeCase)]
+    [DataRow(PasteFormats.ScreamingSnakeCase, AdvancedPasteTextCaseAction.PropertyNames.ScreamingSnakeCase)]
+    [DataRow(PasteFormats.KebabCase, AdvancedPasteTextCaseAction.PropertyNames.KebabCase)]
+    public void TextCaseFormatsUseExpectedAdditionalActionIpcKeys(PasteFormats format, string expectedIpcKey)
+    {
+        Assert.AreEqual(expectedIpcKey, PasteFormat.MetadataDict[format].IPCKey);
+    }
+
+    [TestMethod]
+    public void TextCaseAdditionalActionsAreDisabledByDefault()
+    {
+        var textCase = new AdvancedPasteTextCaseAction();
+
+        Assert.IsTrue(textCase.IsShown);
+        Assert.IsFalse(textCase.LowerCase.IsShown);
+        Assert.IsFalse(textCase.UpperCase.IsShown);
+        Assert.IsFalse(textCase.TitleCase.IsShown);
+        Assert.IsFalse(textCase.SentenceCase.IsShown);
+        Assert.IsFalse(textCase.ToggleCase.IsShown);
+        Assert.IsFalse(textCase.CamelCase.IsShown);
+        Assert.IsFalse(textCase.PascalCase.IsShown);
+        Assert.IsFalse(textCase.SnakeCase.IsShown);
+        Assert.IsFalse(textCase.ScreamingSnakeCase.IsShown);
+        Assert.IsFalse(textCase.KebabCase.IsShown);
     }
 }
