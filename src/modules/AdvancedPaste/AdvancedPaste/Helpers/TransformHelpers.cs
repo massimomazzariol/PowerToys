@@ -26,6 +26,16 @@ public static class TransformHelpers
             PasteFormats.SingleLine => await ToSingleLineAsync(clipboardData),
             PasteFormats.Markdown => await ToMarkdownAsync(clipboardData),
             PasteFormats.Json => await ToJsonAsync(clipboardData),
+            PasteFormats.LowerCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToLowerCase(text)),
+            PasteFormats.UpperCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToUpperCase(text)),
+            PasteFormats.TitleCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToTitleCase(text)),
+            PasteFormats.SentenceCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToSentenceCase(text)),
+            PasteFormats.ToggleCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToggleCase(text)),
+            PasteFormats.CamelCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToCamelCase(text)),
+            PasteFormats.PascalCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToPascalCase(text)),
+            PasteFormats.SnakeCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToSnakeCase(text)),
+            PasteFormats.ScreamingSnakeCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToScreamingSnakeCase(text)),
+            PasteFormats.KebabCase => await ToTextCaseAsync(clipboardData, text => TextCaseHelper.ToKebabCase(text)),
             PasteFormats.ImageToText => await ImageToTextAsync(clipboardData, cancellationToken),
             PasteFormats.PasteAsTxtFile => await ToTxtFileAsync(clipboardData, cancellationToken),
             PasteFormats.PasteAsPngFile => await ToPngFileAsync(clipboardData, cancellationToken),
@@ -48,6 +58,13 @@ public static class TransformHelpers
     {
         Logger.LogTrace();
         return CreateDataPackageFromText(SingleLineTextHelper.Convert(await clipboardData.GetTextOrEmptyAsync()));
+    }
+
+    private static async Task<DataPackage> ToTextCaseAsync(DataPackageView clipboardData, Func<string, string> transform)
+    {
+        Logger.LogTrace();
+        ArgumentNullException.ThrowIfNull(transform);
+        return CreateDataPackageFromText(transform(await clipboardData.GetTextOrEmptyAsync()));
     }
 
     private static async Task<DataPackage> ToMarkdownAsync(DataPackageView clipboardData)

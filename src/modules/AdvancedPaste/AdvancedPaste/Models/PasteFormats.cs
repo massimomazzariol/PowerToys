@@ -50,6 +50,96 @@ public enum PasteFormats
 
     [PasteFormatMetadata(
         IsCoreAction = false,
+        ResourceId = "LowerCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    LowerCase = 13,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "UpperCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    UpperCase = 14,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "TitleCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    TitleCase = 15,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "SentenceCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    SentenceCase = 16,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "ToggleCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    ToggleCase = 17,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "CamelCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    CamelCase = 18,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "PascalCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    PascalCase = 19,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "SnakeCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    SnakeCase = 20,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "ScreamingSnakeCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    ScreamingSnakeCase = 21,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
+        ResourceId = "KebabCase",
+        IconGlyph = "\uE8E9",
+        RequiresAIService = false,
+        CanPreview = false,
+        SupportedClipboardFormats = ClipboardFormat.Text)]
+    KebabCase = 22,
+
+    [PasteFormatMetadata(
+        IsCoreAction = false,
         ResourceId = "FixSpellingAndGrammar",
         IconGlyph = "\uE8E2",
         RequiresAIService = true,
